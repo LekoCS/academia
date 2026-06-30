@@ -352,7 +352,7 @@ function renderList(){
         ${sparkline(ex.id)}
       </div>
       <div class="add">
-        <input class="kg" type="number" inputmode="decimal" step="0.5" placeholder="peso (kg)" data-kg="${ex.id}">
+        <input class="kg" type="number" inputmode="decimal" step="any" placeholder="peso (kg)" data-kg="${ex.id}">
         <input class="reps" type="number" inputmode="numeric" placeholder="reps" data-reps="${ex.id}">
         <button data-reg="${ex.id}">Registrar</button>
       </div>
@@ -375,8 +375,9 @@ function toast(msg){
 
 async function registrar(id){
   const kgEl=document.querySelector(`[data-kg="${id}"]`), repsEl=document.querySelector(`[data-reps="${id}"]`);
-  const w=parseFloat(kgEl.value);
-  if(isNaN(w)||w<=0){ kgEl.focus(); toast('Informe o peso'); return; }
+  const raw=kgEl.value.trim();
+  const w=raw===''?0:parseFloat(raw);
+  if(isNaN(w)||w<0){ kgEl.focus(); toast('Peso inválido'); return; }
   const reps = repsEl.value ? parseInt(repsEl.value) : null;
   if(!logs[id]) logs[id]=[];
   logs[id].push({ date:new Date().toISOString(), weight:w, reps });
