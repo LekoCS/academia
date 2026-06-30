@@ -129,33 +129,40 @@
 <script>
 const ROTINA = {
   A: {
-    nome: "Peito & Tríceps",
+    nome: "Peito, Ombros & Tríceps",
     exercicios: [
-      { id:"supino-reto",     nome:"Supino Reto com Barra", series:"4 × 8-12", obs:"Desça controlado até a linha do mamilo, sem quicar a barra no peito." },
-      { id:"supino-inclinado", nome:"Supino Inclinado Halter", series:"3 × 10-12", obs:"Banco a 30-45°. Foco no peitoral superior." },
-      { id:"crossover",       nome:"Crossover na Polia", series:"3 × 12-15", obs:"Mantenha leve flexão de cotovelo e contraia no centro." },
-      { id:"triceps-corda",   nome:"Tríceps na Corda", series:"4 × 12", obs:"Abra a corda no final do movimento, cotovelos parados." },
-      { id:"triceps-frances", nome:"Tríceps Francês", series:"3 × 10-12", obs:"Desça o peso atrás da cabeça sem mover os cotovelos." },
+      { id:"supino-reto",        nome:"Supino Reto com Barra",            series:"4 × 4-6",      obs:"Desça em 3s até o médio-peito, toque leve sem quicar. Escápulas retraídas, punhos sobre os cotovelos. Suba explosivo." },
+      { id:"supino-inclinado",   nome:"Supino Inclinado Halteres",        series:"4 × 8-10",     obs:"Banco 30-45°. Halteres sobem levemente ao centro sem se tocar. Corrija assimetrias entre os lados." },
+      { id:"desenvolvimento",    nome:"Desenvolvimento com Barra/Halteres",series:"4 × 6-8",      obs:"Core braced, glúteos contraídos para proteger a lombar. Empurre a cabeça pra frente no topo (lockout total). Desça em 2s." },
+      { id:"elevacao-lateral",   nome:"Elevação Lateral (Polia/Haltere)", series:"3 × 12-15",    obs:"Suba até os ombros paralelos ao chão. Polegar levemente para baixo no topo. Desça controlado — o negativo é onde o estímulo vive." },
+      { id:"triceps-frances",    nome:"Extensão de Tríceps Overhead",     series:"3 × 10-12",    obs:"Cabeça longa em alongamento total. Braços verticais colados às orelhas. Desça em 3s, pause 1s no fundo, estenda até o lockout." },
+      { id:"triceps-corda",      nome:"Tríceps Polia Alta (Corda)",       series:"3 × 12-15",    obs:"Cotovelos fixos ao lado do corpo. Abra a corda no final, segure 1s na contração. Retorne até antebraços paralelos ao chão." },
+      { id:"elevacao-joelhos",   nome:"Elevação de Joelhos na Barra",     series:"3 × 12-15",    obs:"Retroversão pélvica antes de subir as pernas — abdômen inicia o movimento. Suba até 90°+. Desça devagar, sem balançar." },
     ]
   },
   B: {
-    nome: "Costas & Bíceps",
+    nome: "Costas, Bíceps & Core",
     exercicios: [
-      { id:"barra-fixa",    nome:"Barra Fixa / Puxada Alta", series:"4 × 8-10", obs:"Puxe trazendo os cotovelos pra baixo, peito pra cima." },
-      { id:"remada-curvada",nome:"Remada Curvada", series:"4 × 10", obs:"Tronco a ~45°, leve a barra até o umbigo." },
-      { id:"remada-baixa",  nome:"Remada Baixa na Polia", series:"3 × 12", obs:"Aperte as escápulas no final, sem balançar o tronco." },
-      { id:"rosca-direta",  nome:"Rosca Direta", series:"4 × 10-12", obs:"Cotovelos colados ao corpo, sem usar impulso." },
-      { id:"rosca-martelo", nome:"Rosca Martelo", series:"3 × 12", obs:"Pegada neutra, trabalha braquial e antebraço." },
+      { id:"barra-fixa",         nome:"Barra Fixa com Carga",             series:"4 × 4-6",      obs:"Deprima as escápulas antes de dobrar os cotovelos. Queixo acima da barra, desça em 2-3s até extensão total. Adicione peso quando bater 8+ reps." },
+      { id:"remada-curvada",     nome:"Remada Curvada com Barra",         series:"4 × 5-7",      obs:"Tronco ~45°, barra até o esterno inferior. Aperte as escápulas por 1s no topo. Core rígido — exercício antiflexão também." },
+      { id:"remada-unilateral",  nome:"Remada Unilateral com Haltere",    series:"3 × 8-10 /lado",obs:"Coluna neutra. Parta com o braço estendido (escápula protrai no fundo) e suba até o cotovelo ultrapassar a linha das costas." },
+      { id:"face-pull",          nome:"Face Pull na Polia (Corda)",       series:"3 × 15-20",    obs:"Puxe até a altura do rosto, abrindo nas laterais da cabeça — polegares apontados pra trás. Pause 2s. Carga leve, foco na técnica." },
+      { id:"rosca-direta",       nome:"Rosca Direta com Barra",           series:"3 × 8-10",     obs:"Cotovelos colados, sem viajar pra frente. Supine totalmente no topo, pause 1s. Desça em 2-3s. EZ-bar se houver desconforto no pulso." },
+      { id:"rosca-inclinada",    nome:"Rosca Inclinada com Halteres",     series:"3 × 10-12",    obs:"Banco 45-60°: braços pendurados em extensão total (alonga a cabeça longa do bíceps). Supine no topo, controle o negativo." },
+      { id:"dead-bug",           nome:"Dead Bug",                         series:"3 × 10 /lado", obs:"Lombar colada no chão SEMPRE. Estenda braço e perna opostos, pause 1-2s. Se a lombar descolar, encurte a amplitude." },
     ]
   },
   C: {
-    nome: "Pernas & Ombros",
+    nome: "Pernas & Core",
     exercicios: [
-      { id:"agachamento", nome:"Agachamento Livre", series:"4 × 8-10", obs:"Desça até a coxa paralela ao chão, joelhos na direção dos pés." },
-      { id:"leg-press",   nome:"Leg Press 45°", series:"4 × 12", obs:"Não trave totalmente os joelhos no topo." },
-      { id:"cadeira-ext", nome:"Cadeira Extensora", series:"3 × 15", obs:"Segure 1s na contração no topo." },
-      { id:"stiff",       nome:"Stiff", series:"3 × 10-12", obs:"Joelhos semi-flexionados, sinta o alongamento do posterior." },
-      { id:"desenvolvimento", nome:"Desenvolvimento Halteres", series:"4 × 10", obs:"Não deixe os cotovelos descerem abaixo da linha dos ombros." },
+      { id:"agachamento",        nome:"Agachamento Livre com Barra",      series:"4 × 4-6",      obs:"Grande respiração, core 360°. Joelhos na direção dos pés. Desça até a dobra do quadril abaixo do joelho. Barra em linha vertical sobre o médio-pé." },
+      { id:"stiff",              nome:"Levantamento Terra Romeno (RDL)",  series:"4 × 8-10",     obs:"Empurre o quadril pra trás (não pra baixo), barra colada às coxas. Desça até o limite com coluna neutra. Suba dirigindo os quadris pra frente." },
+      { id:"agachamento-bulgaro",nome:"Agachamento Búlgaro",              series:"3 × 8-10 /perna",obs:"Pé traseiro no banco, pé da frente avançado para a canela ficar vertical no fundo. Desça até a coxa paralela. ~85% da carga no pé da frente." },
+      { id:"leg-press",          nome:"Leg Press 45°",                    series:"3 × 10-15",    obs:"Pés na largura do quadril, meio da plataforma. Estenda até quase travar — mantenha tensão. Desça com controle, sem quicar no fundo." },
+      { id:"mesa-flexora",       nome:"Mesa Flexora (Lying Leg Curl)",    series:"3 × 12-15",    obs:"Quadris planos no apoio. Curve em direção aos glúteos, segure 1s no topo. Desça em 2s a partir de extensão total." },
+      { id:"hip-thrust",         nome:"Hip Thrust com Barra",             series:"3 × 10-12",    obs:"Costas no banco, barra no vinco do quadril (use proteção). Suba explosivo espremendo os glúteos — tronco paralelo ao chão. Segure 2s no topo." },
+      { id:"panturrilha",        nome:"Elevação de Panturrilha em Pé",    series:"4 × 15-20",    obs:"Na borda de um degrau, calcanhares para baixo (alongamento total) e tão alto quanto possível no topo. Segure 2s. Amplitude completa é essencial." },
+      { id:"prancha",            nome:"Prancha (Frontal + Lateral)",      series:"3 × 45-60s",   obs:"Frontal: aperte quadríceps, glúteos e abdômen ao mesmo tempo. Lateral: corpo em linha diagonal. Progressão: RKC plank." },
     ]
   },
 };
