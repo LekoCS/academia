@@ -61,7 +61,19 @@
   .series-tag{flex-shrink:0;font-family:var(--display);font-weight:600;font-size:15px;color:var(--accent);
     background:rgba(200,250,60,.09);border:1px solid rgba(200,250,60,.25);padding:4px 10px;border-radius:10px;
     letter-spacing:.5px;white-space:nowrap}
-  .obs{margin-top:8px;font-size:13.5px;line-height:1.5;color:var(--muted)}
+  .obs{margin-top:8px;font-size:13.5px;line-height:1.5;color:var(--muted);display:none}
+  .obs.open{display:block}
+  .obs-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:2px 5px;border-radius:6px;flex-shrink:0;line-height:1;transition:.15s}
+  .obs-btn.active{color:var(--accent)}
+  .obs-btn:active{background:var(--surface-2)}
+
+  /* PROGRESS */
+  .progress-wrap{margin-top:10px;display:flex;align-items:center;gap:10px}
+  .progress-track{flex:1;height:4px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .4s ease}
+  .progress-label{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;letter-spacing:.3px}
+  .progress-label.done{color:var(--accent);font-weight:700}
+  .last-trained{font-size:11px;color:var(--muted);letter-spacing:.3px;margin-left:4px}
 
   /* STATS + SPARK */
   .metrics{display:flex;align-items:center;gap:18px;margin-top:14px}
@@ -174,9 +186,11 @@ const ROTINA = {
     <div class="date" id="date"></div>
   </div>
   <div class="days" id="days"></div>
+  <div class="progress-wrap" id="progressWrap"></div>
   <div class="day-title">
     <h2 id="dayName"></h2>
     <span class="count" id="dayCount"></span>
+    <span class="last-trained" id="lastTrained"></span>
   </div>
 </header>
 
@@ -196,6 +210,7 @@ const hasArtifactStorage = typeof window !== 'undefined' && window.storage;
 let logs = {};          // { exerciseId: [ {date, weight, reps} ] }
 let currentDay = 'A';
 const expanded = new Set();
+const obsExpanded = new Set();
 
 async function loadLogs(){
   if(hasArtifactStorage){
@@ -220,6 +235,31 @@ function fmtDate(iso){ const d=new Date(iso); return String(d.getDate()).padStar
 function entries(id){ return (logs[id]||[]).slice().sort((a,b)=>new Date(a.date)-new Date(b.date)); }
 function pr(id){ const e=entries(id); return e.length? Math.max(...e.map(x=>x.weight)) : null; }
 function last(id){ const e=entries(id); return e.length? e[e.length-1] : null; }
+
+function ultimoTreinoRegistrado(){
+  const ordem=Object.keys(ROTINA);
+  let ultimoDia=null,ultimaData=null;
+  for(const dia of ordem){
+    for(const ex of ROTINA[dia].exercicios){
+      const e=entries(ex.id);
+      if(e.length){ const d=new Date(e[e.length-1].date); if(!ultimaData||d>ultimaData){ultimaData=d;ultimoDia=dia;} }
+    }
+  }
+  return ultimoDia?{dia:ultimoDia,data:ultimaData}:null;
+}
+
+function sugerirDia(){
+  const ordem=Object.keys(ROTINA);
+  const u=ultimoTreinoRegistrado();
+  if(!u) return 'A';
+  if(u.data.toDateString()===new Date().toDateString()) return u.dia;
+  return ordem[(ordem.indexOf(u.dia)+1)%ordem.length];
+}
+
+function concluidosHoje(dia){
+  const hoje=new Date().toDateString();
+  return ROTINA[dia].exercicios.filter(ex=>(logs[ex.id]||[]).some(x=>new Date(x.date).toDateString()===hoje)).length;
+}
 
 function sparkline(id){
   const e = entries(id);
@@ -256,6 +296,21 @@ function renderDays(){
   document.getElementById('dayName').textContent = ROTINA[currentDay].nome;
   const n = ROTINA[currentDay].exercicios.length;
   document.getElementById('dayCount').textContent = n+' exercícios';
+
+  const u=ultimoTreinoRegistrado();
+  const ltEl=document.getElementById('lastTrained');
+  if(u){
+    const diff=Math.floor((new Date()-u.data)/(1000*60*60*24));
+    const tempo=diff===0?'hoje':diff===1?'ontem':`há ${diff} dias`;
+    ltEl.textContent=`· Último: ${u.dia} ${tempo}`;
+  } else { ltEl.textContent=''; }
+
+  const feitos=concluidosHoje(currentDay), total=n;
+  const pct=total?Math.round(feitos/total*100):0;
+  const done=feitos===total&&total>0;
+  document.getElementById('progressWrap').innerHTML=`
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <span class="progress-label ${done?'done':''}">${done?'✓ completo':feitos+' / '+total}</span>`;
 }
 
 function renderList(){
@@ -274,12 +329,16 @@ function renderList(){
       </div>`;
     }).join('') || '<div class="h-row"><span class="h-date" style="color:var(--muted)">Nenhum registro ainda.</span></div>';
 
+    const obsOpen = obsExpanded.has(ex.id);
     return `<div class="card">
       <div class="card-top">
         <div class="ex-name">${ex.nome}</div>
-        <div class="series-tag">${ex.series}</div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          <div class="series-tag">${ex.series}</div>
+          ${ex.obs?`<button class="obs-btn ${obsOpen?'active':''}" data-obs="${ex.id}" title="Instruções">ⓘ</button>`:''}
+        </div>
       </div>
-      ${ex.obs?`<div class="obs">${ex.obs}</div>`:''}
+      ${ex.obs?`<div class="obs ${obsOpen?'open':''}">${ex.obs}</div>`:''}
       <div class="metrics">
         <div class="metric">
           <div class="lbl">Último</div>
@@ -335,12 +394,13 @@ async function deletar(id, date){
 }
 
 document.addEventListener('click', async (e)=>{
-  const t=e.target.closest('[data-day],[data-reg],[data-tog],[data-del]');
+  const t=e.target.closest('[data-day],[data-reg],[data-tog],[data-del],[data-obs]');
   if(!t) return;
   if(t.dataset.day){ currentDay=t.dataset.day; render(); }
   else if(t.dataset.reg){ registrar(t.dataset.reg); }
   else if(t.dataset.tog){ const id=t.dataset.tog; expanded.has(id)?expanded.delete(id):expanded.add(id); render(); }
   else if(t.dataset.del){ deletar(t.dataset.del, t.dataset.date); }
+  else if(t.dataset.obs){ const id=t.dataset.obs; obsExpanded.has(id)?obsExpanded.delete(id):obsExpanded.add(id); render(); }
 });
 
 document.addEventListener('keydown',(e)=>{
@@ -374,7 +434,7 @@ document.getElementById('clearBtn').addEventListener('click', async ()=>{
   catch(e){}
 })();
 
-(async function(){ logs = await loadLogs(); render(); })();
+(async function(){ logs = await loadLogs(); currentDay = sugerirDia(); render(); })();
 </script>
 </body>
 </html>
